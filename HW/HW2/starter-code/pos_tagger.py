@@ -550,7 +550,6 @@ class POSTagger():
 
 
 
-
 if __name__ == "__main__":
     pos_tagger = POSTagger()
     train_data = load_data("data/train_x.csv", "data/train_y.csv")
@@ -560,21 +559,20 @@ if __name__ == "__main__":
     emission_threshold = 2
     pos_tagger.train(train_data, emission_threshold)
 
-    # 评估模型
+    # evaluate model by dev_data
     method = 'beam'
     evaluate(dev_data, pos_tagger, method)
 
-    # 预测测试集的标签
+    # test prediction
     test_y = []
     for sentence in test_x:
         pred_tags = pos_tagger.inference(method, sentence)  # 可以选择 'viterbi'、'beam'、'greedy'
         test_y.append(pred_tags)
 
-    # 将预测结果展开为一个列表，并生成对应的 ID
     flat_predictions = [tag for sent_tags in test_y for tag in sent_tags]
     ids = list(range(len(flat_predictions)))
 
-    # 将结果写入 `test_y.csv` 文件
+    # write the result to the 'test_y.csv' file
     df = pd.DataFrame({'id': ids, 'tag': flat_predictions})
     df.to_csv('test_y.csv', index=False)
     print("Test predictions saved to test_y.csv.")
